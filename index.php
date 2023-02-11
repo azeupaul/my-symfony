@@ -1,18 +1,16 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 require __DIR__ . '/vendor/autoload.php';
 
-
-
 $request = Request::createFromGlobals();
 
-$name = $request->query->get('name', 'Pablo');
+// Get the current URI
+$pathInfo = $request->getPathInfo();
 
-$response = new Response();
-$response->headers->set('Content-Type', 'text/html; charset=utf-8');
-$response->setContent(sprintf('Hello %s', htmlspecialchars($name, ENT_QUOTES)));
-
-$response->send();
+if ($pathInfo === '/') {
+    include(__DIR__ . '/src/pages/home.php');
+} else {
+    include(__DIR__ . '/src/pages/bye.php');
+}
