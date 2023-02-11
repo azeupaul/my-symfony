@@ -1,0 +1,11 @@
+{
+    "name": "azeup/my-symfony",
+    "description": "Simple symfony like framework from scratch",
+    "authors": [
+        {
+            "name": "azeupaul",
+            "email": "azeupaul@gmail.com"
+        }
+    ],
+    "require": {}
+}
