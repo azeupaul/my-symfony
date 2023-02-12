@@ -10,8 +10,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $request = Request::createFromGlobals();
 
-$response = new Response;
-
 $routes = require(__DIR__ . '/../src/routes.php');
 
 $context = new RequestContext;
@@ -19,18 +17,15 @@ $context->fromRequest($request);
 
 $urlMatcher = new UrlMatcher($routes, $context);
 
-// Get the current URI
-$path = $request->getPathInfo();
-
 try {
-    $result = $urlMatcher->match($path);
-    extract($result);
+    extract($urlMatcher->match($request->getPathInfo()));
     ob_start();
     include __DIR__ . '/../src/pages/' . $_route . '.php';
-    $response->setContent(ob_get_clean());
+    $response = new Response(ob_get_clean());
 } catch (ResourceNotFoundException $e) {
-    $response->setContent("Page not found");
-    $response->setStatusCode(404);
+    $response = new Response("<h1>Page not found</h1>", 404);
+} catch (Exception $e) {
+    $response = new Response("<h1>An error occured</h1>", 500);
 }
 
 $response->send();
