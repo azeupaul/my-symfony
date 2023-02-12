@@ -17,6 +17,11 @@ $map = [
 // Get the current URI
 $pathInfo = $request->getPathInfo();
 
-include __DIR__ . '/src/pages/' . $map[$pathInfo];
+if (isset($map[$pathInfo])) {
+    include __DIR__ . '/src/pages/' . $map[$pathInfo];
+} else {
+    $response->setContent("Page not found");
+    $response->setStatusCode(404);
+}
 
 $response->send();
