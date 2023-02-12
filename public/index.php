@@ -29,9 +29,9 @@ $path = $request->getPathInfo();
 
 try {
     $result = $urlMatcher->match($path);
-    extract($request->query->all());
+    extract($result);
     ob_start();
-    include __DIR__ . '/../src/pages/' . $result['_route'] . '.php';
+    include __DIR__ . '/../src/pages/' . $_route . '.php';
     $response->setContent(ob_get_clean());
 } catch (ResourceNotFoundException $e) {
     $response->setContent("Page not found");
