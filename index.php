@@ -12,6 +12,7 @@ $response = new Response();
 $map = [
     '/' => 'home.php',
     '/bye' => 'bye.php',
+    '/about' => 'about.php',
 ];
 
 // Get the current URI

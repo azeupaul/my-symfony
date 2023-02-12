@@ -1,3 +1,1 @@
-<?php
-
-$response->setContent('GoodBye');
+<h1>GoodBye</h1>
