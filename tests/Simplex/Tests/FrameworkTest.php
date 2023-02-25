@@ -52,4 +52,33 @@ class FrameworkTest extends TestCase
 
         return new Framework($matcher, $controllerResolver, $argumentResolver);
     }
+
+    public function testControllerAboutResponse ()
+    {
+        $matcher = $this->createMock(Routing\Matcher\UrlMatcherInterface::class);
+
+        $matcher
+            ->expects($this->once())
+            ->method('match')
+            ->will($this->returnValue([
+                '_route' => '/about',
+                '_controller' => [new AboutController(), 'index'],
+            ]))
+        ;
+
+        $matcher
+            ->expects($this->once())
+            ->method('getContext')
+            ->will($this->returnValue($this->createMock(Routing\RequestContext::class)))
+        ;
+        $controllerResolver = new ControllerResolver();
+        $argumentResolver = new ArgumentResolver();
+
+        $framework = new Framework($matcher, $controllerResolver, $argumentResolver);
+
+        $response = $framework->handle(new Request());
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringContainsString('<h1>About us</h1>', $response->getContent());
+    }
 }

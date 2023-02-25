@@ -1,1 +1,0 @@
-{"version":1,"defects":{"App\\Simplex\\Tests\\FrameworkTest::testControllerAboutResponse":8},"times":{"App\\Simplex\\Tests\\FrameworkTest::testNotFoundHandling":0.027,"App\\Simplex\\Tests\\FrameworkTest::testErrorHandling":0.001,"App\\Simplex\\Tests\\FrameworkTest::testControllerAboutResponse":0.008}}
