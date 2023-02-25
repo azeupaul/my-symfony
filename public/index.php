@@ -5,11 +5,9 @@ require __DIR__ . '/../vendor/autoload.php';
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
 
 function render_template($request)
 {
@@ -24,26 +22,15 @@ $request = Request::createFromGlobals();
 $routes = require(__DIR__ . '/../src/routes.php');
 
 $context = new RequestContext;
-$context->fromRequest($request);
+//$context->fromRequest($request);
 
-$compiledRoutes = (new CompiledUrlMatcherDumper($routes))->getCompiledRoutes();
-
-$matcher = new CompiledUrlMatcher($compiledRoutes, $context);
+$matcher = new UrlMatcher($routes, $context);
 
 $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
 
-try {
-    $request->attributes->add($matcher->match($request->getPathInfo()));
-    
-    $controller = $controllerResolver->getController($request);
-    $arguments = $argumentResolver->getArguments($request, $controller);
-
-    $response = call_user_func_array($controller, $arguments);
-} catch (ResourceNotFoundException $e) {
-    $response = new Response("<h1>Page not found</h1>", 404);
-} catch (Exception $e) {
-    $response = new Response("<h1>An error occured</h1>", 500);
-}
+//var_dump(); exit(1);
+$framework = new App\Simplex\Framework($matcher, $controllerResolver, $argumentResolver);
+$response = $framework->handle($request);
 
 $response->send();
