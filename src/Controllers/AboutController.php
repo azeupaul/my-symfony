@@ -2,12 +2,12 @@
 
 namespace App\Controllers;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AboutController
 {
-    public function index(Request $request)
+    public function index()
     {
-        return render_template($request);
+        return new Response('<h1>About us</h1>');
     }
 }

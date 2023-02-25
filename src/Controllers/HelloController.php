@@ -2,17 +2,20 @@
 
 namespace App\Controllers;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class HelloController
 {
-    public function index(Request $request)
+    public function index(String $name)
     {
-        return render_template($request);
+        $clearName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $response = "<h1>Hello $clearName</h1>";
+
+        return new Response($response);
     }
 
-    public function bye(Request $request)
+    public function bye()
     {
-        return render_template($request);
+        return new Response('<h1>GoodBye</h1>');
     }
 }
