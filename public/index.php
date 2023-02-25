@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpFoundation\Response;
@@ -7,10 +9,16 @@ use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
 
-require __DIR__ . '/../vendor/autoload.php';
+function render_template($request)
+{
+    extract($request->attributes->all(), EXTR_SKIP);
+    ob_start();
+    include sprintf(__DIR__.'/../src/pages/%s.php', $_route);
+
+    return new Response(ob_get_clean());
+}
 
 $request = Request::createFromGlobals();
-
 $routes = require(__DIR__ . '/../src/routes.php');
 
 $context = new RequestContext;
