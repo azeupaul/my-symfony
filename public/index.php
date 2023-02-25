@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
 
@@ -28,12 +30,19 @@ $compiledRoutes = (new CompiledUrlMatcherDumper($routes))->getCompiledRoutes();
 
 $matcher = new CompiledUrlMatcher($compiledRoutes, $context);
 
+$controllerResolver = new ControllerResolver();
+$argumentResolver = new ArgumentResolver();
+
 try {
     $request->attributes->add($matcher->match($request->getPathInfo()));
-    $response = call_user_func($request->attributes->get('_controller'), $request);
+    
+    $controller = $controllerResolver->getController($request);
+    $arguments = $argumentResolver->getArguments($request, $controller);
+
+    $response = call_user_func_array($controller, $arguments);
 } catch (ResourceNotFoundException $e) {
     $response = new Response("<h1>Page not found</h1>", 404);
-} catch (Exception $exception) {
+} catch (Exception $e) {
     $response = new Response("<h1>An error occured</h1>", 500);
 }
 
